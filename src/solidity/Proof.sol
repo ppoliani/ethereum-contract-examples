@@ -26,7 +26,7 @@ contract Proof {
     }
   }
 
-  function get(string filehash) return (uint timestamp, string owner) {
+  function get(string filehash) returns (uint timestamp, string owner) {
     return (files[filehash].timestamp, files[filehash].owner);
   }
 }
