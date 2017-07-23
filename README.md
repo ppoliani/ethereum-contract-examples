@@ -11,4 +11,4 @@ An example of a DApp that tracks ownership in the Ethereum blockchain
   ```
 
 2. Attach geth console
-  geth --datadir /Users/ppoliani/Library/Ethereum/ --dev attach
+  `geth --datadir /Users/ppoliani/Library/Ethereum/ --dev attach`
