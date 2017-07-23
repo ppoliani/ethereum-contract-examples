@@ -1,0 +1,22 @@
+{
+  "name": "proof-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bin/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Pavlos Polianidis <ppoliani@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^4.0.0",
+    "kcors": "^2.2.1",
+    "koa": "^2.3.0",
+    "koa-bodyparser": "^4.2.0",
+    "koa-connect": "^2.0.0",
+    "koa-router": "^7.2.1",
+    "morgan": "^1.8.2",
+    "uws": "^8.14.0",
+    "winston": "^2.3.1"
+  }
+}
