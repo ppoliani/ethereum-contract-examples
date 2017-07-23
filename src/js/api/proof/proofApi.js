@@ -16,3 +16,9 @@ const sendTransaction = async (web3, proofContract, ctx, next) => {
     ctx.body = HttpError(500, 'Error');
   }
 }
+
+const getInfo = async (proofContract, ctx, next) => {
+  const {fileHash} = ctx.params;
+  const details = proofContract.get.call(fileHash);
+  ctx.body = {details};
+}
