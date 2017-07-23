@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "es2017",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true
+  },
+  "exclude": [
+    "ui/node_modules",
+    "api/node_modules"
+  ],
+
+  "include": [
+    "ui/**/*.js",
+    "api/**/*.js",
+    "ui/**/*.jsx"
+  ]
+}

@@ -1,15 +1,15 @@
-const {promisify} = require('util');
+const promisify = require('pify');
 const {HttpError} = require('../core/api');
 
 const sendTransaction = async (web3, proofContract, ctx, next) => {
-  const {fileHash, owner} = ctx.params;
-  const sendTransaction = promisify(proofContract.sendTransaction);
+  const {filehash, owner} = ctx.query;
+  const sendTransaction = promisify(proofContract.set.sendTransaction);
   const options = {
     from: web3.eth.accounts[0]
   }
 
   try{
-    const transactionHash = await sendTransaction(owner, fileHash);
+    const transactionHash = await sendTransaction(owner, filehash, options);
     ctx.body = {transactionHash};
   }
   catch(error) {
@@ -18,7 +18,9 @@ const sendTransaction = async (web3, proofContract, ctx, next) => {
 }
 
 const getInfo = async (proofContract, ctx, next) => {
-  const {fileHash} = ctx.params;
-  const details = proofContract.get.call(fileHash);
+  const {filehash} = ctx.query;
+  const details = proofContract.get.call(filehash);
   ctx.body = {details};
 }
+
+module.exports = {sendTransaction, getInfo};

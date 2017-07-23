@@ -20,7 +20,6 @@ bootstrap(RootContainer);
 
 if (module.hot) {
   module.hot.accept('./RootContainer', () => {
-    const NextRootContainer = require('./RootContainer');
-    bootstrap(NextRootContainer);
+    bootstrap(RootContainer);
   });
 }

@@ -17,14 +17,22 @@ module.exports = () => {
     new webpack.NamedModulesPlugin()
   ];
 
+  if(!isProd) {
+    plugins.push(
+      new webpack.HotModuleReplacementPlugin()
+    )
+  }
+
   return {
     devtool: isProd ? 'source-map' : 'source-map',
     context: sourcePath,
 
     entry: {
       app: [
-        'babel-polyfill',
         'react-hot-loader/patch',
+        `webpack-dev-server/client?http://localhost:${process.env.PORT}`,
+        'webpack/hot/only-dev-server',
+        'babel-polyfill',
         './src/view/Index.jsx'
       ],
       vendor: [
@@ -66,7 +74,7 @@ module.exports = () => {
         {
           test: /\.css$/,
           loader: 'style-loader!css-loader',
-          include: /flexboxgrid/
+          include: /node_modules/
         },
         {
           test: /\.(js|jsx)$/,
@@ -105,9 +113,9 @@ module.exports = () => {
       contentBase: path.resolve(__dirname, 'src'),
       historyApiFallback: true,
       port: process.env.PORT,
-      compress: isProd,
-      inline: !isProd,
-      hot: !isProd,
+      compress: false,
+      inline: true,
+      hot: true,
       stats: {
         assets: true,
         children: false,

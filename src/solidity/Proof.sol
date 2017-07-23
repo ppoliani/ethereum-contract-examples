@@ -22,7 +22,7 @@ contract Proof {
     }
     else {
       // status false because ownership for the specific file already exist in the blockchain ledger
-      logFileAddedStatus(true, block.timestamp, owner, filehash);
+      logFileAddedStatus(false, block.timestamp, owner, filehash);
     }
   }
 

@@ -1,7 +1,7 @@
 const entries = require('../helpers/entries');
 
 const routes = [
-
+  require('../proof/proofRoutes')
 ];
 
 const setup = router => {

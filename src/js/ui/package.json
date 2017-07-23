@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "env-cmd ./.env webpack-dev-server --hot --history-api-fallback"
+    "start": "env-cmd ./.env webpack-dev-server"
   },
   "devDependencies": {
     "babel-core": "^6.25.0",
@@ -47,6 +47,7 @@
     "redux": "^3.7.2",
     "redux-actions": "^2.2.1",
     "redux-thunk": "^2.2.0",
+    "sha1": "^1.1.1",
     "whatwg-fetch": "^2.0.3"
   }
 }

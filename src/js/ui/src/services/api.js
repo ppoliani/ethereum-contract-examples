@@ -13,7 +13,7 @@ export const constructUrl = (url, params) =>
       .join('&')
   }
   `
-export default (method, url, body={}, auth=true, headers={}) =>
+export default (url, method='GET', body={}, auth=true, headers={}) =>
   task(async resolver => {
     try {
       const options = {

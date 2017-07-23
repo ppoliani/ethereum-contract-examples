@@ -4,6 +4,7 @@ import {BrowserRouter as Router} from 'react-router-dom'
 import RouterConnection from '../../bridge/RouterConnection'
 import PrivateRoute from './PrivateRoute'
 import Home from '../pages/Home'
+import Proof from '../pages/Proof'
 
 class RouterComponent extends Component {
   render() {
@@ -11,10 +12,11 @@ class RouterComponent extends Component {
       <Router>
         <div style={{height: '100%'}}>
           <PrivateRoute exact path="/" component={Home}/>
+          <PrivateRoute exact path="/proof" component={Proof}/>
         </div>
       </Router>
     )
   }
 }
 
-export default RouterConnection(RouterComponent);
+export default RouterConnection(RouterComponent)
