@@ -17,6 +17,7 @@
     "koa-router": "^7.2.1",
     "morgan": "^1.8.2",
     "uws": "^8.14.0",
+    "web3": "0.14.0",
     "winston": "^2.3.1"
   },
   "devDependencies": {
