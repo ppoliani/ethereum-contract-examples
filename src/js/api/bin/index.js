@@ -8,8 +8,9 @@ const uhttp = require('http');
 const Router = require('koa-router');
 const ctk = require('koa-connect');
 const morgan = require('morgan');
-const applyMiddlewares = require('../core/middlewares');
+const applyMiddlewares = require('../core/middleware');
 const setupRoutes = require('../core/routes');
+const logger = require('../helpers/logger');
 
 const app = new Koa();
 const router = setupRoutes(Router());
