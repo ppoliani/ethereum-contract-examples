@@ -9,9 +9,6 @@ module.exports = () => {
   const isProd = process.env.NODE_ENV === 'production';
 
   const plugins = [
-    new DotenvPlugin({
-      path: './.env'
-    }),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
       minChunks: Infinity,
@@ -20,52 +17,21 @@ module.exports = () => {
     new webpack.NamedModulesPlugin()
   ];
 
-  if (isProd) {
-    // plugins.push(
-    //   new DotenvPlugin({
-    //     path: './.env.production'
-    //   }),
-    //   new webpack.LoaderOptionsPlugin({
-    //     minimize: true,
-    //     debug: false
-    //   }),
-    //   new webpack.optimize.UglifyJsPlugin({
-    //     compress: {
-    //       warnings: false,
-    //       screw_ie8: true,
-    //       conditionals: true,
-    //       unused: true,
-    //       comparisons: true,
-    //       sequences: true,
-    //       dead_code: true,
-    //       evaluate: true,
-    //       if_return: true,
-    //       join_vars: true,
-    //     },
-    //     output: {
-    //       comments: false,
-    //     },
-    //   })
-    // );
-  }
-  else {
-    plugins.push(
-      new webpack.HotModuleReplacementPlugin()
-    );
-  }
-
   return {
     devtool: isProd ? 'source-map' : 'source-map',
     context: sourcePath,
 
     entry: {
-      app: './src/index.jsx',
+      app: [
+        'babel-polyfill',
+        'react-hot-loader/patch',
+        './src/view/Index.jsx'
+      ],
       vendor: [
         'react',
         'react-dom',
         'react-redux',
         'immutable',
-        'babel-polyfill',
         'whatwg-fetch',
         'core-decorators'
       ]
