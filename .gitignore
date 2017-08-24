@@ -1,2 +1,3 @@
 .history
 src/js/**/node_modules
+src/solidity/**/build
