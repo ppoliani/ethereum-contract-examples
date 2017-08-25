@@ -1,4 +1,4 @@
-import {connect} from 'react-redux';
+import {connect} from 'react-redux'
 
 export default Router => {
   const mapStateToProps = state => state;

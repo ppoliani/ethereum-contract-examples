@@ -48,6 +48,8 @@
     "redux-actions": "^2.2.1",
     "redux-thunk": "^2.2.0",
     "sha1": "^1.1.1",
+    "truffle-contract": "^2.0.5",
+    "web3": "0.19",
     "whatwg-fetch": "^2.0.3"
   }
 }

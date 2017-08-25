@@ -91,7 +91,7 @@ module.exports = () => {
       modules: [
         path.resolve(__dirname, 'node_modules'),
         sourcePath
-      ]
+      ],
     },
 
     plugins,
@@ -110,7 +110,7 @@ module.exports = () => {
     },
 
     devServer: {
-      contentBase: path.resolve(__dirname, 'src'),
+      contentBase: path.resolve(__dirname, './'),
       historyApiFallback: true,
       port: process.env.PORT,
       compress: false,
