@@ -5,7 +5,11 @@ import PetContainer from '../petShop/PetContainer'
 
 class PetShopPage extends Component {
   componentDidMount() {
-    this.props.loadPets();
+    const {loadPets, initWeb3, initContract} = this.props;
+
+    loadPets();
+    initWeb3();
+    initContract();
   }
 
   renderPetContainer() {

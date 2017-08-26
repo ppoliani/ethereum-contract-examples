@@ -2,7 +2,7 @@ import {createAction} from 'redux-actions'
 import fetch from '../../services/api'
 import TruffleContract from 'truffle-contract'
 import AdoptionArtifact from '../contractRepository/Adoption.json'
-
+import {partial} from '../../services/fn'
 
 export const SET_PETS = 'PETS::SET_PETS';
 export const SET_ADOPTION_CONTRACT = 'PETS::SET_ADOPTION_CONTRACT';
@@ -28,7 +28,8 @@ export const initContractRoot = TruffleContract => (dispatch, getState) => {
         const AdoptionContract = TruffleContract(AdoptionArtifact);
         AdoptionContract.setProvider(provider);
 
-        dispatch(setAdoptionContract(AdoptionContract))
+        dispatch(setAdoptionContract(AdoptionContract));
+        dispatch(markAdopted());
       },
       Nothing: () => {
         dispatch(setAdoptionContractInitError('Please create a web3 provider before initializing a contract'))
@@ -36,8 +37,27 @@ export const initContractRoot = TruffleContract => (dispatch, getState) => {
     });
 }
 
+export const markAdopted = () => (dispatch, getState) => {
+  const {pet} = getState();
+
+  pet.get('AdoptionContract')
+    .matchWith({
+      Just: ({value: contract}) => {
+        contract.deployed()
+          .then(instance => instance.getAdopters.call())
+          .then(adopters => {
+            console.log('>>>>>>>>>', adopters)
+          })
+          .catch(error => console.error(error))
+      },
+      Nothing: () => {
+        dispatch(setAdoptionContractInitError('Please create a web3 provider before initializing a contract'))
+      },
+    })
+}
+
 export const setAdoptionContract = createAction(SET_ADOPTION_CONTRACT);
 export const setAdoptionContractInitError = createAction(SET_ADOPTION_CONTRACT_INIT_ERROR);
 
 export const loadPets = loadPetsRoot(fetch)
-export const initContract = initContractRoot(TruffleContract)
+export const initContract = partial(initContractRoot, TruffleContract)
