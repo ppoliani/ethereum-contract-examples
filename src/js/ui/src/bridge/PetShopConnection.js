@@ -1,6 +1,6 @@
 import {connect} from 'react-redux'
-import {loadPets, initContract} from '../data/pet/petActions'
-import {initWeb3} from '../data/web3/web3Actions'
+import {loadPets, initContract, adopt} from '../data/pet/petActions'
+import {initWeb3, loadMainAccount} from '../data/web3/web3Actions'
 
 export default PetShop => {
   const mapStateToProps = state => ({
@@ -11,6 +11,8 @@ export default PetShop => {
     loadPets: (dispatch) ['∘'] (loadPets),
     initWeb3: (dispatch) ['∘'] (initWeb3),
     initContract: (dispatch) ['∘'] (initContract),
+    adopt: (dispatch) ['∘'] (adopt),
+    loadMainAccount: (dispatch) ['∘'] (loadMainAccount)
   });
 
   return connect(mapStateToProps, mapDispatchToProps)(PetShop);
