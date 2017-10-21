@@ -49,7 +49,7 @@ If you want to kill the process in the terminal then ctrl+c might to always work
   3) Start a private testnet
 
   ```
-  sudo geth --dev --mine --etherbase 513e7364b492a71f6f6f277ea9ef008ca0b74bfd  --rpc --rpcaddr "0.0.0.0" --datadir /Users/ppoliani/Library/Ethereum
+  sudo geth --dev --mine --etherbase 513e7364b492a71f6f6f277ea9ef008ca0b74bfd  --rpc --rpcaddr "0.0.0.0" --datadir /Users/ppoliani/Library/Ethereum --rpcapi eth,web3,personal
   ```
 
   With the command above we simply started a new testnet by setting the etherbase account to be the one we created earlier. Also we have to set the data directory to the one that is by default used by the Ethereum wallet. Unfortunately, we can not modify that directory through the Ethereum wallet app so we have to point geth to that location.

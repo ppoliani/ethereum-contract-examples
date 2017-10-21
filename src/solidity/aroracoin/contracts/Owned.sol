@@ -1,6 +1,6 @@
 pragma solidity ^0.4.11;
 
-// Give out DApp an centralized entity that can manage out accounts
+// Give our DApp a centralized entity that can manage out accounts
 // i.e. ability to mint more coins or ban people from using our currency
 // This contract will let us perform those tasks
 contract Owned {
