@@ -15,7 +15,7 @@ contract AroraERC20 is ERC20Interface, Owned {
   // If our clients have not enough ethers in their account they won't be able to call some of the methods
   // of this contract. Ideally we don't wont our users to be worried about ethers or blockchain etc.
   // Instead we can auto refill users balance as soon as it detects the balance is low.
-  uint minBalanceForAccounts = 5 finney; // 0.005 ether
+  uint private minBalanceForAccounts = 5 finney; // 0.005 ether
 
   mapping (address => uint) public balanceOf;
   mapping (address => bool) public frozenAccounts;
@@ -26,7 +26,7 @@ contract AroraERC20 is ERC20Interface, Owned {
   event FrozenAccount(address target, bool isFrozen);
   event Approval(address indexed owner, address indexed spender, uint value);
   
-  function AroraERC20(uint _supply, string _token, string _symbol, uint8 _decimals) {
+  function AroraERC20(uint _supply, string _token, string _symbol, uint8 _decimals) public {
     decimals = _decimals;
     name = _token;
     symbol = _symbol;
@@ -57,15 +57,15 @@ contract AroraERC20 is ERC20Interface, Owned {
     }
   }
 
-  function totalSupply() constant returns (uint) {
+  function totalSupply() public constant returns (uint) {
     return supply;
   }
 
-  function allowance(address owner, address spender) constant returns (uint remaining) {
+  function allowance(address owner, address spender) public constant returns (uint) {
     return allowance[owner][spender];
   }
 
-  function balanceOf(address owner) constant returns (uint balance) {
+  function balanceOf(address owner) public constant returns (uint) {
     if(owner == 0) {
       return balanceOf[msg.sender]; 
     }
@@ -77,7 +77,7 @@ contract AroraERC20 is ERC20Interface, Owned {
   /// @notice Send `value` tokens to `to` from your account
   /// @param to The address of the recipient
   /// @param value the amount to send
-  function transfer(address to, uint value) returns (bool sucess) {
+  function transfer(address to, uint value) public returns (bool) {
     _autoRefillIfNeed();
     return _transfer(msg.sender, to, value);
   }
@@ -86,7 +86,7 @@ contract AroraERC20 is ERC20Interface, Owned {
   /// @param from The address of the sender
   /// @param to The address of the recipient
   /// @param value the amount to send
-  function transferFrom(address from, address to, uint value) returns (bool success) {
+  function transferFrom(address from, address to, uint value) public returns (bool) {
     require(value <= allowance[from][msg.sender]);
     allowance[from][msg.sender] -= value;
     _transfer(from, to, value);
@@ -96,7 +96,7 @@ contract AroraERC20 is ERC20Interface, Owned {
   /// @notice Allows `spender` to spend no more than `value` tokens on your behalf
   /// @param spender The address authorized to spend
   /// @param value the max amount they can spend
-  function approve(address spender, uint value) returns (bool success) {
+  function approve(address spender, uint value) public returns (bool) {
     allowance[msg.sender][spender] = value;
     Approval(msg.sender, spender, value);
     return true;
@@ -108,7 +108,7 @@ contract AroraERC20 is ERC20Interface, Owned {
   /// @param extraData some extra information to send to the approved contract
   /// for contracts, you should first approve an amount of tokens they can move from your account and then ping
   /// them to let them know they should do their thing
-  function approveAndCall(address _spender, uint value, bytes extraData) returns (bool success) {
+  function approveAndCall(address _spender, uint value, bytes extraData) public returns (bool) {
     TokenRecipient spender = TokenRecipient(_spender);
 
     if(approve(_spender, value)) {
@@ -118,7 +118,7 @@ contract AroraERC20 is ERC20Interface, Owned {
   }
 
   // Allow owner to create new tokens; i.e. create new tokens from a thin air
-  function mintToken(address target, uint amount) onlyOwner {
+  function mintToken(address target, uint amount) public onlyOwner {
     balanceOf[target] += amount;
     supply += amount;
 
@@ -127,18 +127,18 @@ contract AroraERC20 is ERC20Interface, Owned {
   }
 
   /// @notice Freeze the `target` address
-  function freezeAccount(address target, bool freeze) onlyOwner {
+  function freezeAccount(address target, bool freeze) public onlyOwner {
     frozenAccounts[target] = freeze;
     FrozenAccount(target, freeze);
   }
 
   /// @notice FreSet the new `newSellPrice` and `newBuyPrice`
-  function setPrices(uint newSellPrice, uint newBuyPrice) onlyOwner {
+  function setPrices(uint newSellPrice, uint newBuyPrice) public onlyOwner {
     sellPrice = newSellPrice;
     buyPrice = newBuyPrice;
   }
 
-  function buy() payable returns (uint amount) {
+  function buy() payable public returns (uint amount) { 
     amount = msg.value / buyPrice;
     require(balanceOf[this] >= amount); 
     balanceOf[msg.sender] += amount;
@@ -148,7 +148,7 @@ contract AroraERC20 is ERC20Interface, Owned {
     return amount;
   }
 
-  function sell(uint amount) returns (uint revenue) {
+  function sell(uint amount) public returns (uint revenue) {
     require(balanceOf[msg.sender] >= amount);
     balanceOf[this] += amount;
     balanceOf[msg.sender] -= amount;
@@ -163,7 +163,7 @@ contract AroraERC20 is ERC20Interface, Owned {
   }
 
   /// @notice Set the min balance to `minimumBalanceInFinney`
-  function setMinBalance(uint minimumBalanceInFinney) onlyOwner {
+  function setMinBalance(uint minimumBalanceInFinney) public onlyOwner {
     minBalanceForAccounts = minimumBalanceInFinney * 1 finney;
   }
 }
