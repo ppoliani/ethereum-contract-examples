@@ -27,10 +27,11 @@ contract AroraERC20 is ERC20Interface, Owned {
   event Approval(address indexed owner, address indexed spender, uint value);
   
   function AroraERC20(uint _supply, string _token, string _symbol, uint8 _decimals) {
-    supply = _supply * 10 * uint(_decimals);
-    balanceOf[msg.sender] = supply;
+    decimals = _decimals;
     name = _token;
     symbol = _symbol;
+    supply = _supply * 10 * decimals;
+    balanceOf[msg.sender] = supply;
   }
 
   function _transfer(address from, address to, uint value) internal returns (bool success) {
@@ -65,7 +66,7 @@ contract AroraERC20 is ERC20Interface, Owned {
   }
 
   function balanceOf(address owner) constant returns (uint balance) {
-    if(owner != 0) {
+    if(owner == 0) {
       return balanceOf[msg.sender]; 
     }
     else { 
