@@ -7,31 +7,31 @@ contract AroraERC20 is Owned {
   string public name;
   string public symbol;
   uint8 public decimals = 4;
-  uint256 public totalSupply;
-  uint256 public sellPrice;
-  uint256 public buyPrice;
+  uint public totalSupply;
+  uint public sellPrice;
+  uint public buyPrice;
 
   // If our clients have not enough ethers in their account they won't be able to call some of the methods
   // of this contract. Ideally we don't wont our users to be worried about ethers or blockchain etc.
   // Instead we can auto refill users balance as soon as it detects the balance is low.
   uint minBalanceForAccounts = 5 finney; // 0.005 ether
 
-  mapping (address => uint256) public balanceOf;
+  mapping (address => uint) public balanceOf;
   mapping (address => bool) public frozenAccounts;
-  mapping (address => mapping (address => uint256)) allowance;
+  mapping (address => mapping (address => uint)) public allowance;
   
   //  Events
-  event Transfer(address indexed from, address indexed to, uint256 value);
+  event Transfer(address indexed from, address indexed to, uint value);
   event FrozenAccount(address target, bool isFrozen);
   
-  function AroraERC20(uint256 _supply, string _token, string _symbol, uint8 _decimals) {
-    totalSupply = _supply * 10 * uint256(_decimals);
+  function AroraERC20(uint _supply, string _token, string _symbol, uint8 _decimals) {
+    totalSupply = _supply * 10 * uint(_decimals);
     balanceOf[msg.sender] = totalSupply;
     name = _token;
     symbol = _symbol;
   }
 
-  function _transfer(address from, address to, uint256 value) internal {
+  function _transfer(address from, address to, uint value) internal {
     require(to != 0x0); // prevent transfer to 0x0 address. Use burn() instead
     require(balanceOf[from] > value); // Has sender enough balance?
     require(balanceOf[to] + value > balanceOf[to]); // check for overflows
@@ -51,15 +51,23 @@ contract AroraERC20 is Owned {
     }
   }
 
-  function balanceOf() returns (uint256 balance) {
+  function totalSupply() constant returns (uint supply) {
+    return totalSupply;
+  }
+
+  function allowance(address owner, address spender) constant returns (uint remaining) {
+    return allowance[owner][spender];
+  }
+
+  function balanceOf() constant returns (uint balance) {
     return balanceOf[msg.sender];
   }
 
   /// @notice Send `value` tokens to `to` from your account
   /// @param to The address of the recipient
   /// @param value the amount to send
-  function transfer(address to, uint256 value) {
-    _autoRefillIfNeed(to);
+  function transfer(address to, uint value) {
+    _autoRefillIfNeed();
     _transfer(msg.sender, to, value);
   }
 
@@ -67,7 +75,7 @@ contract AroraERC20 is Owned {
   /// @param from The address of the sender
   /// @param to The address of the recipient
   /// @param value the amount to send
-  function transferFrom(address from, address to, uint256 value) public returns (bool success) {
+  function transferFrom(address from, address to, uint value) public returns (bool success) {
     require(value <= allowance[from][msg.sender]);
     allowance[from][msg.sender] -= value;
     _transfer(from, to, value);
@@ -77,7 +85,7 @@ contract AroraERC20 is Owned {
   /// @notice Allows `spender` to spend no more than `value` tokens on your behalf
   /// @param spender The address authorized to spend
   /// @param value the max amount they can spend
-  function approve(address spender, uint256 value) returns (bool success) {
+  function approve(address spender, uint value) returns (bool success) {
     allowance[msg.sender][spender] = value;
     return true;
   }
@@ -88,7 +96,7 @@ contract AroraERC20 is Owned {
   /// @param extraData some extra information to send to the approved contract
   /// for contracts, you should first approve an amount of tokens they can move from your account and then ping
   /// them to let them know they should do their thing
-  function approveAndCall(address _spender, uint256 value, bytes extraData) returns (bool success) {
+  function approveAndCall(address _spender, uint value, bytes extraData) returns (bool success) {
     TokenRecipient spender = TokenRecipient(_spender);
 
     if(approve(_spender, value)) {
@@ -98,12 +106,12 @@ contract AroraERC20 is Owned {
   }
 
   // Allow owner to create new tokens; i.e. create new tokens from a thin air
-  function mintToken(address target, uint256 amount) onlyOwner {
+  function mintToken(address target, uint amount) onlyOwner {
     balanceOf[target] += amount;
     totalSupply += amount;
 
     Transfer(0, owner, amount); 
-    Tranfer(owner, target, amount);
+    Transfer(owner, target, amount);
   }
 
   /// @notice Freeze the `target` address
@@ -113,12 +121,12 @@ contract AroraERC20 is Owned {
   }
 
   /// @notice FreSet the new `newSellPrice` and `newBuyPrice`
-  function setPrices(uint newSellPrice, uint256 newBuyPrice) onlyOwner {
+  function setPrices(uint newSellPrice, uint newBuyPrice) onlyOwner {
     sellPrice = newSellPrice;
     buyPrice = newBuyPrice;
   }
 
-  function buy() payable returns (uint256 amount) {
+  function buy() payable returns (uint amount) {
     amount = msg.value / buyPrice;
     require(balanceOf[this] >= amount); 
     balanceOf[msg.sender] += amount;
@@ -128,7 +136,7 @@ contract AroraERC20 is Owned {
     return amount;
   }
 
-  function sell(uint256 amount) returns (uint256 revenue) {
+  function sell(uint amount) returns (uint revenue) {
     require(balanceOf[msg.sender] >= amount);
     balanceOf[this] += amount;
     balanceOf[msg.sender] -= amount;
@@ -138,7 +146,7 @@ contract AroraERC20 is Owned {
     // Also make sure the contract have enough ethers so it can actually send ethers to other accounts
     // and the following command doesn't fail
     require(msg.sender.send(revenue)); 
-    Tranfer(msg.sender, this, amount);
+    Transfer(msg.sender, this, amount);
     return revenue;
   }
 
