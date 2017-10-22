@@ -2,8 +2,9 @@ pragma solidity ^0.4.15;
 
 import "./Owned.sol";
 import "./TokenRecipient.sol";
+import "./ERC20Interface.sol";
 
-contract AroraERC20 is Owned {
+contract AroraERC20 is ERC20Interface, Owned {
   string public name;
   string public symbol;
   uint8 public decimals = 4;
@@ -23,6 +24,7 @@ contract AroraERC20 is Owned {
   //  Events
   event Transfer(address indexed from, address indexed to, uint value);
   event FrozenAccount(address target, bool isFrozen);
+  event Approval(address from, address to, uint value);
   
   function AroraERC20(uint _supply, string _token, string _symbol, uint8 _decimals) {
     totalSupply = _supply * 10 * uint(_decimals);
@@ -31,8 +33,9 @@ contract AroraERC20 is Owned {
     symbol = _symbol;
   }
 
-  function _transfer(address from, address to, uint value) internal {
+  function _transfer(address from, address to, uint value) internal returns (bool success) {
     require(to != 0x0); // prevent transfer to 0x0 address. Use burn() instead
+    require(value > 0);
     require(balanceOf[from] > value); // Has sender enough balance?
     require(balanceOf[to] + value > balanceOf[to]); // check for overflows
     require(!frozenAccounts[from]); 
@@ -42,6 +45,8 @@ contract AroraERC20 is Owned {
     balanceOf[to] += value;
 
     Transfer(from, to, value);
+
+    return true;
   }
 
   function _autoRefillIfNeed() internal {
@@ -66,9 +71,9 @@ contract AroraERC20 is Owned {
   /// @notice Send `value` tokens to `to` from your account
   /// @param to The address of the recipient
   /// @param value the amount to send
-  function transfer(address to, uint value) {
+  function transfer(address to, uint value) returns (bool sucess) {
     _autoRefillIfNeed();
-    _transfer(msg.sender, to, value);
+    return _transfer(msg.sender, to, value);
   }
 
   /// @notice Send `value` tokens to `to` on behalf of `from`
@@ -87,6 +92,7 @@ contract AroraERC20 is Owned {
   /// @param value the max amount they can spend
   function approve(address spender, uint value) returns (bool success) {
     allowance[msg.sender][spender] = value;
+    Approval(msg.sender, spender, value);
     return true;
   }
 
