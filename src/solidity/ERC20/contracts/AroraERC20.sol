@@ -8,7 +8,7 @@ contract AroraERC20 is ERC20Interface, Owned {
   string public name;
   string public symbol;
   uint8 public decimals = 4;
-  uint public totalSupply;
+  uint public supply;
   uint public sellPrice;
   uint public buyPrice;
 
@@ -24,11 +24,11 @@ contract AroraERC20 is ERC20Interface, Owned {
   //  Events
   event Transfer(address indexed from, address indexed to, uint value);
   event FrozenAccount(address target, bool isFrozen);
-  event Approval(address from, address to, uint value);
+  event Approval(address indexed owner, address indexed spender, uint value);
   
   function AroraERC20(uint _supply, string _token, string _symbol, uint8 _decimals) {
-    totalSupply = _supply * 10 * uint(_decimals);
-    balanceOf[msg.sender] = totalSupply;
+    supply = _supply * 10 * uint(_decimals);
+    balanceOf[msg.sender] = supply;
     name = _token;
     symbol = _symbol;
   }
@@ -56,16 +56,21 @@ contract AroraERC20 is ERC20Interface, Owned {
     }
   }
 
-  function totalSupply() constant returns (uint supply) {
-    return totalSupply;
+  function totalSupply() constant returns (uint) {
+    return supply;
   }
 
   function allowance(address owner, address spender) constant returns (uint remaining) {
     return allowance[owner][spender];
   }
 
-  function balanceOf() constant returns (uint balance) {
-    return balanceOf[msg.sender];
+  function balanceOf(address owner) constant returns (uint balance) {
+    if(owner != 0) {
+      return balanceOf[msg.sender]; 
+    }
+    else { 
+      return balanceOf[owner];
+    }
   }
 
   /// @notice Send `value` tokens to `to` from your account
@@ -80,7 +85,7 @@ contract AroraERC20 is ERC20Interface, Owned {
   /// @param from The address of the sender
   /// @param to The address of the recipient
   /// @param value the amount to send
-  function transferFrom(address from, address to, uint value) public returns (bool success) {
+  function transferFrom(address from, address to, uint value) returns (bool success) {
     require(value <= allowance[from][msg.sender]);
     allowance[from][msg.sender] -= value;
     _transfer(from, to, value);
@@ -97,7 +102,7 @@ contract AroraERC20 is ERC20Interface, Owned {
   }
 
   /// @notice Allows `_spender` to spend no more than `value` tokens in your behalf, and then ping the contract about it
-  /// @param spender The address authorized to spend
+  /// @param _spender The address authorized to spend
   /// @param value the max amount they can spend
   /// @param extraData some extra information to send to the approved contract
   /// for contracts, you should first approve an amount of tokens they can move from your account and then ping
@@ -114,7 +119,7 @@ contract AroraERC20 is ERC20Interface, Owned {
   // Allow owner to create new tokens; i.e. create new tokens from a thin air
   function mintToken(address target, uint amount) onlyOwner {
     balanceOf[target] += amount;
-    totalSupply += amount;
+    supply += amount;
 
     Transfer(0, owner, amount); 
     Transfer(owner, target, amount);

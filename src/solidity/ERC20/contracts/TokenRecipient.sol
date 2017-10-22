@@ -5,5 +5,5 @@ pragma solidity ^0.4.15;
 // This is a contract that any third party who wants to interact with the AroraToken,
 // needs to deploy.
 interface TokenRecipient {
-  function receiveApproval(address from, uint256 value, address token, bytes extraData);
+  function receiveApproval(address from, uint value, address token, bytes extraData);
 }

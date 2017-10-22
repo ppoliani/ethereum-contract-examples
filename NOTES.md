@@ -34,6 +34,21 @@ If you want to kill the process in the terminal then ctrl+c might to always work
     2) Connect to the localhost:8545 network
     3) Add a new account by copying the private of one of the accounts that testrpc created for us. Private keys will be available in the terminal when you start the testrpc
 
+# Deployment
+
+Use truffle to deploy a contract
+
+1) Go to the truffle project with the smart contracts.
+2) Add a new migration file including the contract you want to deploy.
+3) run `truffle migrate`
+4) Write down the address of the deployed contract
+
+## Interact though Ethereum Wallet
+
+1) Open Ethereum wallet
+2) Go to contracts
+3) Add new contract
+4) Paste the contract adress and the ABI which you can find uner the `build/` directory in your truffle project
 
 # Troubleshooting
 
@@ -49,10 +64,10 @@ If you want to kill the process in the terminal then ctrl+c might to always work
   3) Start a private testnet
 
   ```
-  sudo geth --dev --mine --etherbase 513e7364b492a71f6f6f277ea9ef008ca0b74bfd  --rpc --rpcaddr "0.0.0.0" --datadir /Users/ppoliani/Library/Ethereum --rpcapi eth,web3,personal
+  geth --dev --mine --etherbase 513e7364b492a71f6f6f277ea9ef008ca0b74bfd  --unlock 513e7364b492a71f6f6f277ea9ef008ca0b74bfd --rpc --rpcaddr "0.0.0.0" --datadir /Users/ppoliani/Library/Ethereum --rpcapi eth,web3,personal,net
   ```
 
-  With the command above we simply started a new testnet by setting the etherbase account to be the one we created earlier. Also we have to set the data directory to the one that is by default used by the Ethereum wallet. Unfortunately, we can not modify that directory through the Ethereum wallet app so we have to point geth to that location.
+  With the command above we simply started a new testnet by setting the etherbase account to be the one we created earlier. Also we have to set the data directory to the one that is by default used by the Ethereum wallet. Unfortunately, we can not modify that directory through the Ethereum wallet app so we have to point geth to that location. Also we'll have to give the passowrd for the account we trying to unlock..
 
   4) Open the ethereum wallet
 

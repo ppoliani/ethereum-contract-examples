@@ -1,6 +1,8 @@
+pragma solidity ^0.4.15;
+
 interface ERC20Interface {
   // Get the total token supply
-  function totalSupply() constant returns (uint totalSupply);
+  function totalSupply() constant returns (uint supply);
 
   // Get the account balance of another account with address owner
   function balanceOf(address owner) constant returns (uint balance);
